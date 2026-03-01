@@ -36,14 +36,6 @@ export function SourcesPanel({ workspaceId }: SourcesPanelProps) {
         file_size: 1234567,
         created_at: "2023-01-01",
       },
-      {
-        id: "2",
-        filename: "photo.jpg",
-        file_type: "image",
-        status: "uploading",
-        file_size: 2345678,
-        created_at: "2023-02-01",
-      },
     ];
     setSources(data);
     setLoading(false);

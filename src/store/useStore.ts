@@ -1,10 +1,20 @@
 import { create } from 'zustand';
 
-interface StoreState {
+export interface Workspace {
+  id: string;
+  name: string;
+  description: string | null;
+  created_at: string;
+}
+
+export interface StoreState {
   darkMode: boolean;
   toggleDarkMode: () => void;
   currentWorkspaceId: string | null;
   setCurrentWorkspaceId: (id: string | null) => void;
+  workspaces: Workspace[];
+  addWorkspace: (workspace: Workspace) => void;
+  setWorkspaces: (workspaces: Workspace[]) => void;
 }
 
 export const useStore = create<StoreState>((set) => {
@@ -29,5 +39,9 @@ export const useStore = create<StoreState>((set) => {
       }),
     currentWorkspaceId: null,
     setCurrentWorkspaceId: (id) => set({ currentWorkspaceId: id }),
+    workspaces: [],
+    addWorkspace: (workspace) =>
+      set((state) => ({ workspaces: [workspace, ...state.workspaces] })),
+    setWorkspaces: (workspaces) => set({ workspaces }),
   };
 });

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { X } from 'lucide-react';
 import { motion, AnimatePresence } from "framer-motion";
+import { useStore } from "../store/useStore";
 
 interface WorkspaceModalProps {
   isOpen: boolean;
@@ -17,6 +18,7 @@ export function WorkspaceModal({
   const [description, setDescription] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const { addWorkspace, setCurrentWorkspaceId } = useStore();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -29,6 +31,15 @@ export function WorkspaceModal({
     setError("");
 
     try {
+      const newWorkspace = {
+        id: Math.random().toString(36).substr(2, 9),
+        name: name.trim(),
+        description: description.trim() || null,
+        created_at: new Date().toISOString(),
+      };
+
+      addWorkspace(newWorkspace);
+      setCurrentWorkspaceId(newWorkspace.id);
 
       setName("");
       setDescription("");

@@ -2,21 +2,13 @@ import { useState, useEffect } from 'react';
 import { Plus, Folder, Moon, Sun, LogOut } from 'lucide-react';
 import { motion } from "framer-motion";
 import { useAuth } from "../contexts/AuthContext";
-import { useStore } from "../store/useStore";
-
-interface Workspace {
-  id: string;
-  name: string;
-  description: string | null;
-  created_at: string;
-}
+import { useStore, Workspace } from "../store/useStore";
 
 interface WorkspaceSidebarProps {
   onNewWorkspace: () => void;
 }
 
 export function WorkspaceSidebar({ onNewWorkspace }: WorkspaceSidebarProps) {
-  const [workspaces, setWorkspaces] = useState<Workspace[]>([]);
   const [loading, setLoading] = useState(true);
   const { user, signOut } = useAuth();
   const {
@@ -24,16 +16,21 @@ export function WorkspaceSidebar({ onNewWorkspace }: WorkspaceSidebarProps) {
     setCurrentWorkspaceId,
     darkMode,
     toggleDarkMode,
+    workspaces,
+    setWorkspaces,
   } = useStore();
 
   useEffect(() => {
-    if (user) {
+    if (user && workspaces.length === 0) {
       loadWorkspaces();
+    } else {
+      setLoading(false);
     }
   }, [user]);
 
   const loadWorkspaces = async () => {
-    const data = [
+    // Simulated fetch - in a real app, this would be an API call
+    const initialData: Workspace[] = [
       {
         id: "1",
         name: "Personal",
@@ -48,9 +45,9 @@ export function WorkspaceSidebar({ onNewWorkspace }: WorkspaceSidebarProps) {
       },
     ];
 
-    setWorkspaces(data);
-    if (data && data.length > 0 && !currentWorkspaceId) {
-      setCurrentWorkspaceId(data[0].id);
+    setWorkspaces(initialData);
+    if (initialData.length > 0 && !currentWorkspaceId) {
+      setCurrentWorkspaceId(initialData[0].id);
     }
     setLoading(false);
   };
