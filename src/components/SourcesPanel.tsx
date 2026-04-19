@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Upload, FileText, Image, Video, File, X, CheckCircle, AlertCircle, Loader } from 'lucide-react';
 import { motion, AnimatePresence } from "framer-motion";
+import { useAuth } from '../contexts/AuthContext';
 
 interface Source {
   id: string;
@@ -21,6 +22,7 @@ export function SourcesPanel({ workspaceId }: SourcesPanelProps) {
   const [sources, setSources] = useState<Source[]>([]);
   const [loading, setLoading] = useState(true);
   const [dragActive, setDragActive] = useState(false);
+  const { token, signOut } = useAuth();
 
   useEffect(() => {
     if (workspaceId) {
@@ -30,7 +32,17 @@ export function SourcesPanel({ workspaceId }: SourcesPanelProps) {
 
   const loadSources = async () => {
     try {
-      const response = await fetch(`${BACKEND_URL}/files`);
+      const response = await fetch(`${BACKEND_URL}/files`, {
+        headers: {
+          "Authorization": `Bearer ${token}`
+        }
+      });
+      
+      if (response.status === 401) {
+        signOut();
+        return;
+      }
+      
       if (!response.ok) {
         throw new Error(`Failed to fetch files: ${response.status}`);
       }
@@ -91,8 +103,16 @@ export function SourcesPanel({ workspaceId }: SourcesPanelProps) {
 
         const response = await fetch(`${BACKEND_URL}/upload`, {
           method: "POST",
+          headers: {
+            "Authorization": `Bearer ${token}`
+          },
           body: formData,
         });
+
+        if (response.status === 401) {
+          signOut();
+          return;
+        }
 
         if (!response.ok) {
           throw new Error(`Upload failed with status: ${response.status}`);
@@ -128,7 +148,16 @@ export function SourcesPanel({ workspaceId }: SourcesPanelProps) {
     try {
       const response = await fetch(`${BACKEND_URL}/files/${sourceId}`, {
         method: "DELETE",
+        headers: {
+          "Authorization": `Bearer ${token}`
+        }
       });
+      
+      if (response.status === 401) {
+        signOut();
+        return;
+      }
+      
       if (!response.ok) {
         throw new Error(`Failed to delete file: ${response.status}`);
       }

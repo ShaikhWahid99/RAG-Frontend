@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
-import { Send, Sparkles, Lightbulb } from 'lucide-react';
+import { Send, Lightbulb } from 'lucide-react';
 import { motion, AnimatePresence } from "framer-motion";
+import { useAuth } from '../contexts/AuthContext';
 
 interface Message {
   id: string;
@@ -30,6 +31,7 @@ export function ChatPanel({ workspaceId }: ChatPanelProps) {
   const [loading, setLoading] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const { token, signOut } = useAuth();
 
   useEffect(() => {
     if (workspaceId) {
@@ -71,9 +73,15 @@ export function ChatPanel({ workspaceId }: ChatPanelProps) {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
         },
         body: JSON.stringify({ question: content }),
       });
+
+      if (response.status === 401) {
+        signOut();
+        return;
+      }
 
       if (!response.ok) {
         throw new Error(`Request failed with status: ${response.status}`);
