@@ -123,7 +123,7 @@ export function SourcesPanel({ workspaceId }: SourcesPanelProps) {
 
         setSources((prev) =>
           prev.map((s) =>
-            s.id === tempId ? { ...s, status: "indexed" } : s
+            s.id === tempId ? { ...s, id: data.id, status: "indexed" } : s
           )
         );
       } catch (error) {
