@@ -108,12 +108,12 @@ export function WorkspaceSidebar({ onNewWorkspace }: WorkspaceSidebarProps) {
           onClick={toggleDarkMode}
           className="w-full flex items-center space-x-3 px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors text-gray-700 dark:text-gray-300"
         >
-          {darkMode ? (
+          {/* {darkMode ? (
             <Sun className="w-5 h-5" />
           ) : (
             <Moon className="w-5 h-5" />
-          )}
-          <span>{darkMode ? "Light Mode" : "Dark Mode"}</span>
+          )} */}
+          {/* <span>{darkMode ? "Light Mode" : "Dark Mode"}</span> */}
         </button>
         <button
           onClick={signOut}

@@ -8,7 +8,7 @@ interface Message {
   role: string;
   content: string;
   source_references: any;
-  image?: string;
+  images?: string[];
   created_at: string;
 }
 
@@ -96,7 +96,7 @@ export function ChatPanel({ workspaceId }: ChatPanelProps) {
           role: "assistant",
           content: data.answer || "I'm sorry, I couldn't find a relevant answer to your question in the document.",
           source_references: null, // Backend doesn't return sources yet
-          image: data.image,
+          images: data.images,
           created_at: new Date().toISOString(),
         },
       ]);
@@ -183,11 +183,11 @@ export function ChatPanel({ workspaceId }: ChatPanelProps) {
                   </div>
                 )}
                 <p className="text-sm whitespace-pre-wrap">{message.content}</p>
-                {message.image && (
-                  <div className="mt-3">
-                    <img src={`${BACKEND_URL}${message.image}`} alt="Result" className="max-w-full rounded shadow" />
+                {message.images && message.images.map((img, idx) => (
+                  <div key={idx} className="mt-3">
+                    <img src={`${BACKEND_URL}${img}`} alt={`Result ${idx + 1}`} className="max-w-full rounded shadow" />
                   </div>
-                )}
+                ))}
                 {message.source_references && (
                   <div className="mt-3 pt-3 border-t border-gray-200 dark:border-gray-700">
                     <p className="text-xs font-medium mb-1 opacity-70">
@@ -233,7 +233,7 @@ export function ChatPanel({ workspaceId }: ChatPanelProps) {
                   />
                 </div>
                 <span className="text-xs text-gray-500 dark:text-gray-400">
-                  AI is thinking...
+                  Processing...
                 </span>
               </div>
             </div>
